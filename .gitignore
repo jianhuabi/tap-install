@@ -1,0 +1,13 @@
+generated/
+values.yaml
+tanzu-cluster-essentials/
+tanzu/
+### IntelliJ IDEA ###
+.idea
+### VS Code ###
+.vscode/
+.kube-config
+.envrc
+temp/
+value-example-gcrio.yaml
+
