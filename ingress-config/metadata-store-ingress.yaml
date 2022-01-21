@@ -13,5 +13,5 @@ spec:
       protocol: tls
   virtualhost:
     fqdn: #@ "metadata-store.{}".format(data.values.ingress.domain)
-    tls:
-      secretName: #@ "{}/{}".format(data.values.ingress.contour_tls_namespace,data.values.ingress.contour_tls_secret)
+    # tls:
+    #   secretName: #@ "{}/{}".format(data.values.ingress.contour_tls_namespace,data.values.ingress.contour_tls_secret)
