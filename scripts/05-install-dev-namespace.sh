@@ -1,12 +1,20 @@
 #!/bin/bash
 
 # configure developer namespace
-DEVELOPER_NAMESPACE=$(cat values.yaml  | grep developer_namespace | awk '/developer_namespace:/ {print $2}')
+DEVELOPER_NAMESPACE=$(yq e .developer_namespace values.yaml)
 kubectl create ns $DEVELOPER_NAMESPACE
-export CONTAINER_REGISTRY_HOSTNAME=$(cat values.yaml | grep container_registry_supply_chain_ootb -A 3 | awk '/hostname:/ {print $2}')
-export CONTAINER_REGISTRY_USERNAME=$(cat values.yaml | grep container_registry -A 3 | awk '/username:/ {print $2}')
-export CONTAINER_REGISTRY_PASSWORD=$(cat values.yaml | grep container_registry -A 3 | awk '/password:/ {print $2}')
-tanzu secret registry add registry-credentials --username ${CONTAINER_REGISTRY_USERNAME} --password ${CONTAINER_REGISTRY_PASSWORD} --server ${CONTAINER_REGISTRY_HOSTNAME} --namespace ${DEVELOPER_NAMESPACE}
+# install gcr.io registry
+export CONTAINER_REGISTRY_HOSTNAME=$(yq e .container_registry.hostname values.yaml)
+export CONTAINER_REGISTRY_USERNAME=$(yq e .container_registry.username values.yaml)
+export CONTAINER_REGISTRY_PASSWORD=$(yq e .container_registry.password values.yaml)
+# tanzu secret registry add registry-credentials --username ${CONTAINER_REGISTRY_USERNAME} --password ${CONTAINER_REGISTRY_PASSWORD} --server ${CONTAINER_REGISTRY_HOSTNAME} --namespace ${DEVELOPER_NAMESPACE}
+
+REGISTRY_PASSWORD=${CONTAINER_REGISTRY_PASSWORD} kp secret create registry-credentials --registry ${CONTAINER_REGISTRY_HOSTNAME} --registry-user ${CONTAINER_REGISTRY_USERNAME} --namespace ${DEVELOPER_NAMESPACE}
+
+export DOCKER_REGISTRY_HOSTNAME=$(yq e .docker_registry.hostname values.yaml)
+export DOCKER_REGISTRY_USERNAME=$(yq e .docker_registry.username values.yaml)
+export DOCKER_REGISTRY_PASSWORD=$(yq e .docker_registry.password values.yaml)
+tanzu secret registry add registry-docker-credentials --username ${DOCKER_REGISTRY_USERNAME} --password ${DOCKER_REGISTRY_PASSWORD} --server ${DOCKER_REGISTRY_HOSTNAME} --namespace ${DEVELOPER_NAMESPACE}
 
 cat <<EOF | kubectl -n $DEVELOPER_NAMESPACE apply -f -
 
@@ -29,6 +37,7 @@ secrets:
   - name: registry-credentials
 imagePullSecrets:
   - name: registry-credentials
+  - name: registry-docker-credentials
   - name: tap-registry
 
 ---

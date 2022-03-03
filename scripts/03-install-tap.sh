@@ -11,11 +11,11 @@ echo "PROFILE: $PROFILE"
 if [ "$PROFILE" = "full" ];
 then
     
-  tanzu package install tap -p tap.tanzu.vmware.com -v 1.0.1-build.1 --values-file generated/tap-values.yaml -n tap-install
+  tanzu package install tap -p tap.tanzu.vmware.com -v 1.1.0-build.5 --values-file generated/tap-values.yaml -n tap-install
 
 else
 
-  tanzu package install tap -p tap.tanzu.vmware.com -v 1.0.1-build.1 --values-file generated/tap-values-light.yaml -n tap-install
+  tanzu package install tap -p tap.tanzu.vmware.com -v 1.0.2-build.1 --values-file generated/tap-values-light.yaml -n tap-install
 fi
 
 
