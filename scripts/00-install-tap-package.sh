@@ -12,7 +12,7 @@ tanzu secret registry add tap-registry \
   --export-to-all-namespaces --yes --namespace tap-install
 
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.1.0-build.5 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.1.2-build.2 \
   --namespace tap-install
 
 tanzu package repository get tanzu-tap-repository --namespace tap-install

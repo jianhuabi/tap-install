@@ -16,6 +16,9 @@ export DOCKER_REGISTRY_USERNAME=$(yq e .docker_registry.username values.yaml)
 export DOCKER_REGISTRY_PASSWORD=$(yq e .docker_registry.password values.yaml)
 tanzu secret registry add registry-docker-credentials --username ${DOCKER_REGISTRY_USERNAME} --password ${DOCKER_REGISTRY_PASSWORD} --server ${DOCKER_REGISTRY_HOSTNAME} --namespace ${DEVELOPER_NAMESPACE}
 
+# for tekton to access gcr.io
+kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "registry-credentials"}]}' -n ${DEVELOPER_NAMESPACE}
+
 cat <<EOF | kubectl -n $DEVELOPER_NAMESPACE apply -f -
 
 apiVersion: v1

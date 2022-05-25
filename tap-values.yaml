@@ -1,6 +1,8 @@
 #@ load("@ytt:data", "data")
 ---
 profile: full
+excluded_packages:
+  - tekton.tanzu.vmware.com
 ceip_policy_disclosed: true # Installation fails if this is set to 'false'
 buildservice:
   kp_default_repository: #@ "{}/tap/build-service".format(data.values.container_registry.hostname)
@@ -9,7 +11,7 @@ buildservice:
   tanzunet_username: #@ data.values.tanzunet.username
   tanzunet_password: #@ data.values.tanzunet.password
   enable_automatic_dependency_updates: true
-  descriptor_name: tap-1.0.0-full
+  descriptor_name: full
 
 supply_chain: testing_scanning
 
@@ -29,7 +31,7 @@ tap_gui:
   ingressDomain: #@ data.values.ingress.domain
   service_type: ClusterIP # NodePort for distributions that don't support LoadBalancer
   # tls:
-  #   secretName: #@ data.values.ingress.contour_tls_secret                                                 
+  #   secretName: #@ data.values.ingress.contour_tls_secret
   #   namespace: #@ data.values.ingress.contour_tls_namespace
   # app_config:
   #   backend:
@@ -39,6 +41,12 @@ tap_gui:
   #   app:
   #     baseUrl: #@ "https://tap-gui.{}".format(data.values.ingress.domain)
   app_config:
+    catalog:
+      locations:
+        - type: url
+          target: https://gitlab.eng.vmware.com/project-star/pstar-backstage-poc/-/blob/master/sample-catalogs/demo/catalog-info.yaml
+    supplyChain:
+      enablePlugin: true
     backend:
       baseUrl: #@ "http://tap-gui.{}".format(data.values.ingress.domain)
       cors:
@@ -48,7 +56,17 @@ tap_gui:
     integrations:
       github: # Other integrations available see NOTE below
         - host: github.com
-          token: ${GITHUB_TOKEN}
+          token: #@ data.values.tap_gui.integrations.github
+      gitlab:
+        - host: gitlab.eng.vmware.com
+          apiBaseUrl: https://gitlab.eng.vmware.com/api/v4
+          token: #@ data.values.tap_gui.integrations.gitlab
+    proxy:
+      "/gitlabci":
+        target: "https://gitlab.eng.vmware.com/api/v4"
+        allowedMethods: ["GET"]
+        headers:
+          PRIVATE-TOKEN: #@ data.values.tap_gui.integrations.gitlab
 
 metadata_store:
   app_service_type: ClusterIP # (optional) Defaults to LoadBalancer. Change to NodePort for distributions that don't support LoadBalancer
@@ -56,16 +74,16 @@ metadata_store:
 contour:
   envoy:
     service:
-      annotations:      
+      annotations:
         external-dns.alpha.kubernetes.io/hostname: #@ "*.{}".format(data.values.ingress.domain)
       type: LoadBalancer
 
-accelerator: 
-  domain: #@ "accelerator.{}".format(data.values.ingress.domain)                         
+accelerator:
+  domain: #@ "accelerator.{}".format(data.values.ingress.domain)
   ingress:
     include: true
   # tls:
-  #   secretName: #@ data.values.ingress.contour_tls_secret                                                 
+  #   secretName: #@ data.values.ingress.contour_tls_secret
   #   namespace: #@ data.values.ingress.contour_tls_namespace
   server:
     service_type: ClusterIP
@@ -78,4 +96,3 @@ cnrs:
 grype:
   namespace: #@ data.values.developer_namespace
   targetImagePullSecret: registry-credentials
-

@@ -1,0 +1,21 @@
+# rabbitmq-clusterresource.yaml
+apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+kind: ClusterResource
+metadata:
+  name: rabbitmq-offering
+  labels:
+    # The following labels will be applied automatically by the ClusterResource controller
+    # to help with filtering and searching of ClusterResource resources
+    services.apps.tanzu.vmware.com/api-group: rabbitmq.com
+    services.apps.tanzu.vmware.com/api-kind: RabbitmqCluster
+spec:
+  # A reference to the Kubernetes API Group and Kind that this ClusterResource is describing
+  resourceRef:
+    # The Kubernetes API Group the resource belongs to
+    group: rabbitmq.com
+    # The Kubernetes API Kind of the resource
+    kind: RabbitmqCluster
+  # Short description of the resource (optional; string)
+  shortDescription: "It's a RabbitMQ Cluster Offering resource"
+  # Long description of the resource (optional; string)
+  longDescription: "RabbitMQ is an open source ...and Offered to dev-space as a ClusterResource"
