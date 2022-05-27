@@ -1,28 +1,44 @@
 #@data/values
 ---
-profile: full
+profile: run
+tap_verion: ''
 tanzunet:
-  username: user@example.com
+  username:
   password:
 ingress:
-  domain: example.com
+  #domain: tap-app.tkg-aws-e2-lab.winterfell.be
+  domain: tap.h2o-4-317.h2o.vmware.com
+  domain_run: run.h2o-4-317.h2o.vmware.com
   contour_tls_namespace: tanzu-system-ingress
   contour_tls_secret: contour-tls-delegation-cert
+docker_registry:
+  hostname: https://index.docker.io/v1
+  username: 'mbi213'
+  password: ''
 container_registry:
-  hostname: harbor.example.com
-  username: admin
-  password: 
+  hostname: us-docker.pkg.dev/cnr-demo/gcr.io
+  username: '_json_key_base64'
+  password: '=='
+# container_registry:
+#   hostname: harbor.dragonstone.tkg-aws-e2-lab.winterfell.be
+#   username: admin
+#   password: QJgKB5yAhrtGmRqI
 container_registry_supply_chain_ootb:
-  hostname: harbor.example.com
-  username: admin
-  password: 
-  repository: "tap-wkld"
+  hostname: us-docker.pkg.dev/cnr-demo/gcr.io
+  repository: tap-wkld
+  username: '_json_key_base64'
+  password: '=='
 developer_namespace: dev-space
 acme:
-  email: user@example.com
+  email: jianhua.bi@hotmail.com
 aws:
-  region: eu-central-1
+  region: us-west-2
   credentials:
-    accessKey: 
-    secretKey: 
+    accessKey:
+    secretKey:
   zoneId:
+tap_gui:
+  integrations:
+    github: ''
+    gitlab: ''
+    metadatatoken: ''

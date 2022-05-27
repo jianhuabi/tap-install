@@ -67,6 +67,13 @@ tap_gui:
         allowedMethods: ["GET"]
         headers:
           PRIVATE-TOKEN: #@ data.values.tap_gui.integrations.gitlab
+      "/metadata-store":
+        target: "https://metadata-store-app.metadata-store:8443/api/v1"
+        changeOrigin: true
+        secure: false
+        headers:
+          Authorization: #@ "Bearer {}".format(data.values.tap_gui.integrations.metadatatoken)
+          X-Custom-Source: project-star
 
 metadata_store:
   app_service_type: ClusterIP # (optional) Defaults to LoadBalancer. Change to NodePort for distributions that don't support LoadBalancer

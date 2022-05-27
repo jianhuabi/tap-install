@@ -1,6 +1,8 @@
 #@ load("@ytt:data", "data")
 ---
-profile: light
+profile: run
+excluded_packages:
+  - tekton.tanzu.vmware.com
 ceip_policy_disclosed: true # Installation fails if this is set to 'false'
 buildservice:
   kp_default_repository: #@ "{}/tap/build-service".format(data.values.container_registry.hostname)
@@ -18,29 +20,29 @@ ootb_supply_chain_basic:
     server: #@ data.values.container_registry_supply_chain_ootb.hostname
     repository: #@ data.values.container_registry_supply_chain_ootb.repository
   gitops:
-    ssh_secret: ""
+    ssh_secret: ''
 
 tap_gui:
   ingressEnabled: true
-  ingressDomain: #@ data.values.ingress.domain
+  ingressDomain: #@ data.values.ingress.domain_run
   service_type: ClusterIP # NodePort for distributions that don't support LoadBalancer
   # tls:
-  #   secretName: #@ data.values.ingress.contour_tls_secret                                                 
+  #   secretName: #@ data.values.ingress.contour_tls_secret
   #   namespace: #@ data.values.ingress.contour_tls_namespace
   # app_config:
   #   backend:
-  #     baseUrl: #@ "https://tap-gui.{}".format(data.values.ingress.domain)
+  #     baseUrl: #@ "https://tap-gui.{}".format(data.values.ingress.domain_run)
   #     cors:
-  #       origin: #@ "https://tap-gui.{}".format(data.values.ingress.domain)
+  #       origin: #@ "https://tap-gui.{}".format(data.values.ingress.domain_run)
   #   app:
-  #     baseUrl: #@ "https://tap-gui.{}".format(data.values.ingress.domain)
+  #     baseUrl: #@ "https://tap-gui.{}".format(data.values.ingress.domain_run)
   app_config:
     backend:
-      baseUrl: #@ "http://tap-gui.{}".format(data.values.ingress.domain)
+      baseUrl: #@ "http://tap-gui.{}".format(data.values.ingress.domain_run)
       cors:
-        origin: #@ "http://tap-gui.{}".format(data.values.ingress.domain)
+        origin: #@ "http://tap-gui.{}".format(data.values.ingress.domain_run)
     app:
-      baseUrl: #@ "http://tap-gui.{}".format(data.values.ingress.domain)
+      baseUrl: #@ "http://tap-gui.{}".format(data.values.ingress.domain_run)
     integrations:
       github: # Other integrations available see NOTE below
         - host: github.com
@@ -52,23 +54,25 @@ metadata_store:
 contour:
   envoy:
     service:
-      annotations:      
-        external-dns.alpha.kubernetes.io/hostname: #@ "*.{}".format(data.values.ingress.domain)
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: #@ "*.{}".format(data.values.ingress.domain_run)
       type: LoadBalancer
 
-accelerator: 
-  domain: #@ "accelerator.{}".format(data.values.ingress.domain)                         
+accelerator:
+  domain: #@ "accelerator.{}".format(data.values.ingress.domain_run)
   ingress:
     include: true
   # tls:
-  #   secretName: #@ data.values.ingress.contour_tls_secret                                                 
+  #   secretName: #@ data.values.ingress.contour_tls_secret
   #   namespace: #@ data.values.ingress.contour_tls_namespace
   server:
     service_type: ClusterIP
 
 cnrs:
-  domain_name: #@ "cnr.{}".format(data.values.ingress.domain)
-  domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
+  domain_name: #@ "cnr.{}".format(data.values.ingress.domain_run)
+  domain_template: '{{.Name}}-{{.Namespace}}.{{.Domain}}'
   # default_tls_secret: #@ "{}/{}".format(data.values.ingress.contour_tls_namespace,data.values.ingress.contour_tls_secret)
 
-
+grype:
+  namespace: #@ data.values.developer_namespace
+  targetImagePullSecret: registry-credentials
