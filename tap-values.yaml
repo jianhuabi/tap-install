@@ -1,8 +1,8 @@
 #@ load("@ytt:data", "data")
 ---
 profile: full
-excluded_packages:
-  - tekton.tanzu.vmware.com
+#excluded_packages:
+  #- tekton.tanzu.vmware.com
 ceip_policy_disclosed: true # Installation fails if this is set to 'false'
 buildservice:
   kp_default_repository: #@ "{}/tap/build-service".format(data.values.container_registry.hostname)
