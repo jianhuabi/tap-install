@@ -2,7 +2,7 @@
 ---
 profile: full
 #excluded_packages:
-  #- tekton.tanzu.vmware.com
+#  - tekton.tanzu.vmware.com
 ceip_policy_disclosed: true # Installation fails if this is set to 'false'
 buildservice:
   kp_default_repository: #@ "{}/tap/build-service".format(data.values.container_registry.hostname)
@@ -20,7 +20,7 @@ ootb_supply_chain_testing_scanning:
     server: #@ data.values.container_registry_supply_chain_ootb.hostname
     repository: #@ data.values.container_registry_supply_chain_ootb.repository
   gitops:
-    ssh_secret: ""
+    ssh_secret: ''
 
 learningcenter:
   ingressDomain: #@ "learning-center.{}".format(data.values.ingress.domain)
@@ -62,13 +62,13 @@ tap_gui:
           apiBaseUrl: https://gitlab.eng.vmware.com/api/v4
           token: #@ data.values.tap_gui.integrations.gitlab
     proxy:
-      "/gitlabci":
-        target: "https://gitlab.eng.vmware.com/api/v4"
-        allowedMethods: ["GET"]
+      '/gitlabci':
+        target: 'https://gitlab.eng.vmware.com/api/v4'
+        allowedMethods: ['GET']
         headers:
           PRIVATE-TOKEN: #@ data.values.tap_gui.integrations.gitlab
-      "/metadata-store":
-        target: "https://metadata-store-app.metadata-store:8443/api/v1"
+      '/metadata-store':
+        target: 'https://metadata-store-app.metadata-store:8443/api/v1'
         changeOrigin: true
         secure: false
         headers:
@@ -97,7 +97,7 @@ accelerator:
 
 cnrs:
   domain_name: #@ "cnr.{}".format(data.values.ingress.domain)
-  domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
+  domain_template: '{{.Name}}-{{.Namespace}}.{{.Domain}}'
   # default_tls_secret: #@ "{}/{}".format(data.values.ingress.contour_tls_namespace,data.values.ingress.contour_tls_secret)
 
 grype:

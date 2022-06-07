@@ -10,4 +10,4 @@ tanzu/
 .envrc
 temp/
 value-example-gcrio.yaml
-
+govcvars.sh
