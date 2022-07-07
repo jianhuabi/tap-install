@@ -20,7 +20,9 @@ ootb_supply_chain_testing_scanning:
     server: #@ data.values.container_registry_supply_chain_ootb.hostname
     repository: #@ data.values.container_registry_supply_chain_ootb.repository
   gitops:
-    ssh_secret: ''
+    ssh_secret: 'git-ssh'
+    repository_prefix: #@ "https://github.com/{}".format(data.values.gitops.my_org)
+    branch: #@ data.values.gitops.branch
 
 learningcenter:
   ingressDomain: #@ "learning-center.{}".format(data.values.ingress.domain)
@@ -41,10 +43,10 @@ tap_gui:
   #   app:
   #     baseUrl: #@ "https://tap-gui.{}".format(data.values.ingress.domain)
   app_config:
-    catalog:
-      locations:
-        - type: url
-          target: https://gitlab.eng.vmware.com/project-star/pstar-backstage-poc/-/blob/master/sample-catalogs/demo/catalog-info.yaml
+    # catalog:
+    #   locations:
+    #     - type: url
+    #       target: https://gitlab.eng.vmware.com/project-star/pstar-backstage-poc/-/blob/master/sample-catalogs/demo/catalog-info.yaml
     supplyChain:
       enablePlugin: true
     backend:
@@ -57,16 +59,16 @@ tap_gui:
       github: # Other integrations available see NOTE below
         - host: github.com
           token: #@ data.values.tap_gui.integrations.github
-      gitlab:
-        - host: gitlab.eng.vmware.com
-          apiBaseUrl: https://gitlab.eng.vmware.com/api/v4
-          token: #@ data.values.tap_gui.integrations.gitlab
+      # gitlab:
+      #   - host: gitlab.eng.vmware.com
+      #     apiBaseUrl: https://gitlab.eng.vmware.com/api/v4
+      #     token: #@ data.values.tap_gui.integrations.gitlab
     proxy:
-      '/gitlabci':
-        target: 'https://gitlab.eng.vmware.com/api/v4'
-        allowedMethods: ['GET']
-        headers:
-          PRIVATE-TOKEN: #@ data.values.tap_gui.integrations.gitlab
+      # '/gitlabci':
+      #   target: 'https://gitlab.eng.vmware.com/api/v4'
+      #   allowedMethods: ['GET']
+      #   headers:
+      #     PRIVATE-TOKEN: #@ data.values.tap_gui.integrations.gitlab
       '/metadata-store':
         target: 'https://metadata-store-app.metadata-store:8443/api/v1'
         changeOrigin: true
@@ -74,9 +76,27 @@ tap_gui:
         headers:
           Authorization: #@ "Bearer {}".format(data.values.tap_gui.integrations.metadatatoken)
           X-Custom-Source: project-star
+    # support multiple cluster
+    kubernetes:
+      serviceLocatorMethod:
+        type: 'multiTenant'
+      clusterLocatorMethods:
+        - type: 'config'
+          clusters:
+            - url: #@ data.values.clusters.host.cluster_url
+              name: #@ data.values.clusters.host.cluster_name
+              authProvider: serviceAccount
+              serviceAccountToken: #@ data.values.clusters.host.cluster_token
+              skipTLSVerify: true
+    #         # - url: #@ data.values.clusters.run.cluster_url
+    #         #   name: #@ data.values.clusters.run.cluster_name
+    #         #   authProvider: serviceAccount
+    #         #   serviceAccountToken: #@ data.values.clusters.run.cluster_token
+    #         #   skipTLSVerify: true
 
 metadata_store:
   app_service_type: ClusterIP # (optional) Defaults to LoadBalancer. Change to NodePort for distributions that don't support LoadBalancer
+  ns_for_export_app_cert: '*'
 
 contour:
   envoy:
@@ -103,3 +123,8 @@ cnrs:
 grype:
   namespace: #@ data.values.developer_namespace
   targetImagePullSecret: registry-credentials
+# support multiple cluster
+appliveview:
+  ingressEnabled: true
+  ingressDomain: #@ data.values.ingress.domain
+

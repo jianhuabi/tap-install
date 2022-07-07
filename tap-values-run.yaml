@@ -1,8 +1,8 @@
 #@ load("@ytt:data", "data")
 ---
 profile: run
-  #excluded_packages:
-  #- tekton.tanzu.vmware.com
+#excluded_packages:
+#- tekton.tanzu.vmware.com
 ceip_policy_disclosed: true # Installation fails if this is set to 'false'
 buildservice:
   kp_default_repository: #@ "{}/tap/build-service".format(data.values.container_registry.hostname)
@@ -76,3 +76,8 @@ cnrs:
 grype:
   namespace: #@ data.values.developer_namespace
   targetImagePullSecret: registry-credentials
+
+appliveview_connector:
+  backend:
+    sslDisabled: true
+    host: #@ "appliveview.{}".format(data.values.ingress.domain)

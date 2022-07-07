@@ -19,6 +19,9 @@ tanzu secret registry add registry-docker-credentials --username ${DOCKER_REGIST
 # for tekton to access gcr.io
 kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "registry-credentials"}]}' -n ${DEVELOPER_NAMESPACE}
 
+export GIT_PASSWORD=$(yq e .gitops.git_password values.yaml)
+export GIT_USERNAME=$(yq e .gitops.git_username values.yaml)
+
 cat <<EOF | kubectl -n $DEVELOPER_NAMESPACE apply -f -
 
 apiVersion: v1
@@ -30,7 +33,17 @@ metadata:
 type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: e30K
-
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-ssh 
+  annotations:
+    tekton.dev/git-0: https://github.com        
+type: kubernetes.io/basic-auth          
+stringData:
+  username: ${GIT_USERNAME}
+  password: ${GIT_PASSWORD}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -38,6 +51,7 @@ metadata:
   name: default
 secrets:
   - name: registry-credentials
+  - name: git-ssh
 imagePullSecrets:
   - name: registry-credentials
   - name: registry-docker-credentials

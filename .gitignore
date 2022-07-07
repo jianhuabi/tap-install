@@ -9,5 +9,6 @@ tanzu/
 .kube-config
 .envrc
 temp/
+project/
 value-example-gcrio.yaml
 govcvars.sh
