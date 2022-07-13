@@ -108,6 +108,14 @@ rules:
   resources:
   - apps
   verbs: ['get', 'watch', 'list']
+- apiGroups: ['source.apps.tanzu.vmware.com']
+  resources:
+  - mavenartifacts
+  verbs:
+  - get
+  - list
+  - watch
+  - create
 EOF
 
 fi
