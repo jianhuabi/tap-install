@@ -18,3 +18,23 @@ spec:
     -  #@ data.values.ingress.domain
   issuerRef:
     name: ca-issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-issuer
+  namespace: api-portal
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: api-portal-cert
+  namespace: api-portal
+spec:
+  secretName: api-portal-cert
+  dnsNames:
+    -  #@ data.values.ingress.domain
+  issuerRef:
+    name: ca-issuer

@@ -135,7 +135,7 @@ accelerator:
 
 cnrs:
   domain_name: #@ "cnr.{}".format(data.values.ingress.domain)
-  domain_template: '{{.Name}}-{{.Namespace}}.{{.Domain}}'
+  domain_template: '{{.Name}}.{{.Namespace}}.{{.Domain}}'
   # default_tls_secret: #@ "{}/{}".format(data.values.ingress.contour_tls_namespace,data.values.ingress.contour_tls_secret)
 
 grype:
@@ -146,3 +146,11 @@ appliveview:
   ingressEnabled: true
   ingressDomain: #@ data.values.ingress.domain
 
+api_portal:
+  apiPortalServer:
+    title: #@ data.values.api_portal.api_portal_server.title
+    sourceUrls: #@ data.values.api_portal.api_portal_server.source_urls
+
+appsso:
+  domain_name: #@ "appsso.{}".format(data.values.ingress.domain)
+  domain_template: '{{.Name}}-{{.Namespace}}.{{.Domain}}'
