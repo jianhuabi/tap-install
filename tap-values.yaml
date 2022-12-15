@@ -153,4 +153,4 @@ api_portal:
 
 appsso:
   domain_name: #@ "appsso.{}".format(data.values.ingress.domain)
-  domain_template: '{{.Name}}-{{.Namespace}}.{{.Domain}}'
+  domain_template: '{{.Name}}.{{.Namespace}}.{{.Domain}}'
