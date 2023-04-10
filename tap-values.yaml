@@ -154,3 +154,10 @@ api_portal:
 appsso:
   domain_name: #@ "appsso.{}".format(data.values.ingress.domain)
   domain_template: '{{.Name}}.{{.Namespace}}.{{.Domain}}'
+
+namespace_provisioner:
+  controller: true
+  namespace_selector:
+    matchExpressions:
+      - key: apps.tanzu.vmware.com/tap-ns
+        operator: Exists
