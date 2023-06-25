@@ -1,5 +1,14 @@
 #@ load("@ytt:data", "data")
 ---
+shared:
+  ingress_domain: #@ data.values.ingress.domain
+  ingress_issuer: #@ data.values.ingress.issuer
+
+  image_registry:
+    project_path: #@ data.values.container_registry.hostname
+    username: #@ data.values.container_registry.username
+    password: #@ data.values.container_registry.password
+
 profile: full
 #excluded_packages:
 #  - tekton.tanzu.vmware.com
@@ -8,10 +17,10 @@ buildservice:
   kp_default_repository: #@ "{}/tap/build-service".format(data.values.container_registry.hostname)
   kp_default_repository_username: #@ data.values.container_registry.username
   kp_default_repository_password: #@ data.values.container_registry.password
-  tanzunet_username: #@ data.values.tanzunet.username
-  tanzunet_password: #@ data.values.tanzunet.password
-  enable_automatic_dependency_updates: true
-  descriptor_name: full
+  # tanzunet_username: #@ data.values.tanzunet.username
+  # tanzunet_password: #@ data.values.tanzunet.password
+  # enable_automatic_dependency_updates: true
+  # descriptor_name: full
 
 supply_chain: testing_scanning
 
@@ -73,6 +82,11 @@ tap_gui:
             clientId: #@ data.values.tap_gui.auth.okta_client_id
             clientSecret: #@ data.values.tap_gui.auth.okta_client_secret
             audience: #@ data.values.tap_gui.auth.okta_audience
+        github:
+          development:
+            clientId: #@ data.values.tap_gui.auth.github_client_id
+            clientSecret: #@ data.values.tap_gui.auth.github_client_secret
+            audience: #@ data.values.tap_gui.auth.github_audience
     integrations:
       github: # Other integrations available see NOTE below
         - host: github.com

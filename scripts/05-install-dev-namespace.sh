@@ -63,6 +63,9 @@ kind: Role
 metadata:
   name: default
 rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["*"]
+  verbs: ['*']
 - apiGroups: [source.toolkit.fluxcd.io]
   resources: [gitrepositories]
   verbs: ['*']
